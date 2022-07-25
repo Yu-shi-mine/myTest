@@ -6,6 +6,7 @@ mlflow:
   artifact: 'D:/01_WORKSPACE/09_LSTM_torch/mlflow/'
 dataset:
   one2one: true
+  wave_intencity: 0.5
   sequence_num: 500
   add_noise: true
   data_window: 1
