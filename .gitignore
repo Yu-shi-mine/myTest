@@ -1,0 +1,6 @@
+.vscode
+__pycache__
+log
+log_v2
+mlruns
+outputs

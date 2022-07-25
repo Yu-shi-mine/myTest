@@ -1,0 +1,34 @@
+mlflow:
+  work_dir: 'D:/01_WORKSPACE/09_LSTM_torch/mlflow'
+  uri: 'http://127.0.0.1:5000'
+  run_name: 'seq_20'
+  cfg_path: 'D:/01_WORKSPACE/09_LSTM_torch/config/config.yaml'
+  artifact: 'D:/01_WORKSPACE/09_LSTM_torch/mlflow/'
+dataset:
+  one2one: true
+  sequence_num: 500
+  add_noise: true
+  data_window: 1
+  label_window: 1
+  time_shift: 1
+  total_wave_num: 16
+dataloader:
+  shuffle: False
+  num_worklers: 0
+model:
+  name: 'One2OneStateful'
+  stateful: true
+  input_size: 2
+  lstm_input: 100
+  hidden_size: 500
+  output_size: 1
+  num_layers: 1
+  bidirectional: false
+train:
+  num_epochs: 500
+  log_root: 'D:/01_WORKSPACE/09_LSTM_torch/log'
+infer:
+  weight_root: 'D:/01_WORKSPACE/09_LSTM_torch/log'
+  weigth_folder: '20220725_212513'
+  weight_epoch: '100'
+  recursive: true
