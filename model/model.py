@@ -81,9 +81,9 @@ class One2ManyStatefulLSTM(nn.Module):
 def main(cfg: DictConfig):
     model = One2OneLSTM(cfg)
 
-    x = torch.rand(size=[cfg.dataloader.batch_size, cfg.dataset.data_window, cfg.model.input_size])
-    hn = torch.zeros(size=[1, cfg.dataloader.batch_size, cfg.model.hidden_size])
-    cn = torch.zeros(size=[1, cfg.dataloader.batch_size, cfg.model.hidden_size])
+    x = torch.rand(size=[cfg.dataset.train_wave_num, cfg.dataset.data_window, cfg.model.input_size])
+    hn = torch.zeros(size=[1, cfg.dataset.train_wave_num, cfg.model.hidden_size])
+    cn = torch.zeros(size=[1, cfg.dataset.train_wave_num, cfg.model.hidden_size])
 
     output, hn, cn = model(x, hn, cn)
 

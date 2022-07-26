@@ -5,7 +5,7 @@ Train LSTM
 from typing import Tuple
 import warnings
 from datetime import datetime
-import os, time
+import os, time, glob
 
 import numpy as np
 import pandas as pd
@@ -22,7 +22,7 @@ import torch.optim as optim
 from torch.optim.lr_scheduler import ExponentialLR
 from torch.utils.data import DataLoader
 
-from dataset import WaveDataset
+from dataset import CSVDataset
 from model.model import One2OneLSTM, One2OneStatefulLSTM, One2ManyStatefulLSTM
 
 
@@ -37,7 +37,7 @@ def main(cfg: DictConfig):
 
     # Output folder
     dt = datetime.today().strftime('%Y%m%d_%H%M%S')
-    log_dir = os.path.join(cfg.train.log_root+'_v2', dt)
+    log_dir = os.path.join(cfg.train.log_root, dt+'_v2')
     os.makedirs(log_dir, exist_ok=True)
 
     # Create mlflow experiment
@@ -156,7 +156,7 @@ def main(cfg: DictConfig):
                             val_iteration += 1
                     
                     # Prepare for next step
-                    next_head = output.detach()[:, :, 1:]
+                    next_head = output.detach()[:, :, 0:]
 
             # step LR scheduler
             scheduler.step()
@@ -195,26 +195,29 @@ def main(cfg: DictConfig):
             if ((epoch+1) % 10 == 0):
                 torch.save(model.state_dict(), os.path.join(log_dir, './weights_' + str(epoch+1) + '.pth'))
 
-    mlflow.end_run()
-
 
 def gen_dataloaders(cfg: DictConfig) -> dict[str: DataLoader, str: DataLoader]:
-    x = np.arange(0, 2*np.pi, 2*np.pi/cfg.dataset.sequence_num, dtype=np.float32)
-    train_dataset = WaveDataset(x, cfg)
-    val_dataset = WaveDataset(x, cfg)
+    # Get csv list
+    dataset_root = os.path.join(cfg.dataset.ROOT, cfg.dataset.fol_name)
+    train_csv_list = glob.glob(os.path.join(dataset_root, 'train/*.csv'))
+    val_csv_list = glob.glob(os.path.join(dataset_root, 'val/*.csv'))
+
+    # Create Dataset
+    train_dataset = CSVDataset(train_csv_list, cfg)
+    val_dataset = CSVDataset(val_csv_list, cfg)
 
     # Create DataLoader
     train_dataloader = DataLoader(
         dataset=train_dataset,
-        batch_size=cfg.dataset.total_wave_num,
-        shuffle=cfg.dataloader.shuffle,
-        num_workers=cfg.dataloader.num_worklers
+        batch_size=cfg.dataset.train_wave_num,
+        shuffle=cfg.dataset.shuffle,
+        num_workers=0
     )
     val_dataloader = DataLoader(
         dataset=val_dataset,
-        batch_size=cfg.dataset.total_wave_num,
-        shuffle=cfg.dataloader.shuffle,
-        num_workers=cfg.dataloader.num_worklers
+        batch_size=cfg.dataset.val_wave_num,
+        shuffle=cfg.dataset.shuffle,
+        num_workers=0
     )
     dataloaders_dict = {'train': train_dataloader, 'val': val_dataloader}
     return dataloaders_dict

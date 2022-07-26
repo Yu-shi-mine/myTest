@@ -4,3 +4,6 @@ log
 log_v2
 mlruns
 outputs
+dataset/20220726_223546_noisy_16
+dataset/20220726_223552_clear_16
+_old

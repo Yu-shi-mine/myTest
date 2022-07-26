@@ -3,23 +3,31 @@ mlflow:
   uri: 'http://127.0.0.1:5000'
   run_name: 'seq_20'
   cfg_path: 'D:/01_WORKSPACE/09_LSTM_torch/config/config.yaml'
+  log_ckp: 'D:/01_WORKSPACE/09_LSTM_torch/log/'
   artifact: 'D:/01_WORKSPACE/09_LSTM_torch/mlflow/'
 dataset:
-  one2one: true
-  wave_intencity: 0.5
+  ROOT: 'D:/01_WORKSPACE/09_LSTM_torch/dataset'
+  fol_name: '20220727_072205_ex0'
+  wave_intencity: 1.0
+  add_shift: false
+  wave_shift:
+    - -10
+    - 10
+    - 0.1
   sequence_num: 500
-  add_noise: true
+  add_noise: false
   data_window: 1
   label_window: 1
   time_shift: 1
-  total_wave_num: 16
-dataloader:
-  shuffle: False
-  num_worklers: 0
+  total_wave_num: 3
+  train_wave_num: 1
+  val_wave_num: 1
+  test_wave_num: 1
+  shuffle: false
 model:
   name: 'One2OneStateful'
   stateful: true
-  input_size: 2
+  input_size: 1
   lstm_input: 100
   hidden_size: 500
   output_size: 1
@@ -30,6 +38,5 @@ train:
   log_root: 'D:/01_WORKSPACE/09_LSTM_torch/log'
 infer:
   weight_root: 'D:/01_WORKSPACE/09_LSTM_torch/log'
-  weigth_folder: '20220725_212513'
-  weight_epoch: '100'
-  recursive: true
+  weigth_folder: '20220727_072503'
+  recursive: false
